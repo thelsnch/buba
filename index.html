@@ -52,7 +52,6 @@
             animation: fadeInUp 0.8s ease-out forwards;
         }
 
-        /* --- Секция Карточек --- */
         .character-grid {
             display: flex;
             gap: 15px;
@@ -74,13 +73,11 @@
             overflow: hidden;
             transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
             border: 2px solid var(--card-border);
-            /* По умолчанию картинка скрыта (серая и мутная) */
             filter: grayscale(1) brightness(0.4) blur(2px);
             transform: scale(0.9);
             opacity: 0.5;
         }
 
-        /* Стиль для "открытой" карточки */
         .card.active {
             filter: grayscale(0) brightness(1) blur(0);
             transform: scale(1.05);
@@ -90,7 +87,6 @@
             z-index: 2;
         }
 
-        /* --- Секция Квеста --- */
         .quiz-container {
             width: 90%;
             max-width: 500px;
@@ -140,7 +136,10 @@
     <header>
         <h1>LISNYCHYI <span style="color: var(--accent-color);">QUESTIONS</span></h1>
         <p style="color: var(--text-secondary); margin: 5px 0 0; font-size: 0.8rem;">відповідай та отримуй емоції відкриваючи карточки Буби!</p>
-        <p style="color: var(--text-secondary); margin: 2px 0 0; font-size: 0.5rem;">Карточки поки неактивні, проте, щоб їх відкрити та побачити всю красу, необхідно відповісти <br>на надто легкі та емоційно веселі питання. Якщо виникла проблема, можеш повідомити про неї власнику сайту: @thelsnch - instagram.</p>
+        <p id="sub-header" style="color: var(--text-secondary); margin: 10px auto 0; font-size: 0.6rem; max-width: 400px; line-height: 1.4;">
+            Карточки поки неактивні, проте, щоб їх відкрити та побачити всю красу, необхідно відповісти на надто легкі та емоційно веселі питання. 
+            <br>Якщо виникла проблема, можеш повідомити: @thelsnch - instagram.
+        </p>
     </header>
 
     <div class="character-grid">
@@ -151,7 +150,7 @@
     </div>
 
     <div class="quiz-container" id="quiz">
-        <div class="question" id="question-text">Завантаження, трішки терпіння...</div>
+        <div class="question" id="question-text">Завантаження...</div>
         <div class="options" id="options-container"></div>
 
         <div class="progress-bar">
@@ -168,7 +167,6 @@
             {
                 question: "Дофамін може піднятися дуже легко через?",
                 options: ["Шоколад", "Пиво", "Торт"]
-
             },
             {
                 question: "Риса характеру?",
@@ -179,7 +177,7 @@
                 options: ["Сон <3", "Звичайно чай з тортом", "Все залежить від магнітної бурі"]
             },
             {
-                question: "Question x2, card4, <br>Енергія від",
+                question: "Енергія від чого?",
                 options: ["Кави", "Їжі", "Виспатись"]
             }
         ];
@@ -187,13 +185,20 @@
         let currentStep = 0;
         const totalSteps = quizData.length;
 
-        // Инициализация первого вопроса и первой карточки
         window.onload = () => {
             updateQuiz();
             document.getElementById('card-0').classList.add('active'); 
         };
 
         function handleAnswer() {
+            // МЕНЯЕМ ТЕКСТ В ШАПКЕ ПРИ ПЕРВОМ ОТВЕТЕ
+            if (currentStep === 0) {
+                const subHeader = document.getElementById('sub-header');
+                subHeader.innerHTML = "Чудовий початок! Продовжуй в тому ж дусі, щоб розблокувати всі фото ✨";
+                subHeader.style.color = "var(--accent-color)";
+                subHeader.style.fontSize = "0.8rem";
+            }
+
             const quizContainer = document.getElementById('quiz');
             quizContainer.classList.add('changing');
 
@@ -203,10 +208,8 @@
 
                 if (currentStep < totalSteps) {
                     updateQuiz();
-                    // ОТКРЫВАЕМ СЛЕДУЮЩУЮ КАРТОЧКУ
                     const nextCard = document.getElementById(`card-${currentStep}`);
                     if (nextCard) {
-                        // Убираем активность с предыдущих (опционально) и даем новой
                         document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
                         nextCard.classList.add('active');
                     }
@@ -236,24 +239,24 @@
         }
 
         function showResult() {
+            // Убираем текст из шапки совсем при финале
+            document.getElementById('sub-header').style.display = 'none';
+
             const quizContainer = document.getElementById('quiz');
-            // При завершении подсвечиваем все карточки
             document.querySelectorAll('.card').forEach(c => {
                 c.classList.add('active');
-                c.style.animation = 'none'; // Остановим пульсацию для финала
+                c.style.animation = 'none';
                 c.style.boxShadow = '0 0 15px var(--accent-glow)';
             });
 
             quizContainer.innerHTML = `
-                <h2 style="color: var(--accent-color);">Вітаю, ти щойно ВІДКРИЛА ВСІ КАРТОЧКИ з Бубеняткою <3</h2>
-                <p>Ти щойно пройшла весь квест та розблокувала всі карточки. Продовжуємо?</p>
+                <h2 style="color: var(--accent-color);">Вітаю, ти щойно ВІДКРИЛА ВСІ КАРТОЧКИ! <3</h2>
+                <p>Ти розблокувала всю колекцію Буби. Дякую за гру!</p>
                 <button class="option-btn" style="background: var(--accent-color); width: 100%; font-weight: bold;" onclick="location.reload()">Спробувати ще раз!</button>
-                <br><button class="option-btn" style="background: var(--accent-color); width: 100%; font-weight: bold;" onclick="location.reload()">Хочу продовжити (button no active)</button>
-                <p>з.і. якщо бажаєте відповісти на продовжити, то кнопка неактивна, інфо можна передати розробнику сайту: instagram: thelsnch</p>
+                <p style="font-size: 0.7rem; margin-top: 15px; opacity: 0.7;">з.і. зворотній зв'язок: instagram @thelsnch</p>
             `;
         }
     </script>
-            <p style="color: var(--text-secondary); margin: 5px 0 0; font-size: 0.8rem;">(c) developing by thelsnch 2026</p>
-            <br><br>
+    <center><p style="color: var(--text-secondary); margin: 20px 0; font-size: 0.7rem;">(c) developing by thelsnch 2026</p></center>
 </body>
 </html>
