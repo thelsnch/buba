@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lsnch edition</title>
+    <style>
+        :root {
+            --bg-color: #0b0b0b;
+            --accent-color: #ff0055;
+            --accent-glow: rgba(255, 0, 85, 0.5);
+            --card-bg: #1a1a1a;
+            --card-border: #333;
+            --text-color: #ffffff;
+            --text-secondary: #aaaaaa;
+            --transition-speed: 0.4s;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 5px var(--accent-glow); border-color: var(--accent-color); }
+            50% { box-shadow: 0 0 20px var(--accent-color); border-color: #fff; }
+            100% { box-shadow: 0 0 5px var(--accent-glow); border-color: var(--accent-color); }
+        }
+
+        @keyframes questionBounce {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.98); opacity: 0.8; }
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        header {
+            padding: 30px 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* --- Секция Карточек --- */
+        .character-grid {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+            justify-content: center;
+            animation: fadeInUp 0.8s ease-out forwards;
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .card {
+            width: 120px;
+            height: 220px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: all var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 2px solid var(--card-border);
+            /* По умолчанию картинка скрыта (серая и мутная) */
+            filter: grayscale(1) brightness(0.4) blur(2px);
+            transform: scale(0.9);
+            opacity: 0.5;
+        }
+
+        /* Стиль для "открытой" карточки */
+        .card.active {
+            filter: grayscale(0) brightness(1) blur(0);
+            transform: scale(1.05);
+            opacity: 1;
+            border-color: var(--accent-color);
+            animation: pulseGlow 2s infinite ease-in-out;
+            z-index: 2;
+        }
+
+        /* --- Секция Квеста --- */
+        .quiz-container {
+            width: 90%;
+            max-width: 500px;
+            background: var(--card-bg);
+            margin: 20px 0;
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            border-bottom: 4px solid var(--accent-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.8s ease-out forwards;
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        .quiz-container.changing { animation: questionBounce 0.4s ease-out; }
+
+        .question { font-size: 1.2rem; font-weight: 600; margin-bottom: 25px; min-height: 3em; }
+
+        .options { display: flex; flex-direction: column; gap: 12px; }
+
+        .option-btn {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            padding: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-btn:hover { border-color: var(--accent-color); background: rgba(255, 0, 85, 0.1); }
+        .option-btn:active { transform: scale(0.95); background: var(--accent-color); }
+
+        .progress-bar { width: 100%; height: 4px; background: #222; margin-top: 25px; border-radius: 10px; overflow: hidden; }
+        .progress-fill { width: 0%; height: 100%; background: var(--accent-color); transition: width 0.5s ease; }
+
+        @media (max-width: 600px) {
+            .card { width: 80px; height: 140px; }
+            .character-grid { gap: 8px; padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>LISNYCHYI <span style="color: var(--accent-color);">QUESTIONS</span></h1>
+        <p style="color: var(--text-secondary); margin: 5px 0 0; font-size: 0.8rem;">відповідай та отримуй емоції відкриваючи карточки Буби!</p>
+        <p style="color: var(--text-secondary); margin: 2px 0 0; font-size: 0.5rem;">Карточки поки неактивні, проте, щоб їх відкрити та побачити всю красу, необхідно відповісти <br>на надто легкі та емоційно веселі питання. Якщо виникла проблема, можеш повідомити про неї власнику сайту: @thelsnch - instagram.</p>
+    </header>
+
+    <div class="character-grid">
+        <div id="card-0" class="card" style="background: url('https://i.ibb.co/WvDCTZkP/photo-2026-03-22-18-54-44.jpg') center/cover;"></div>
+        <div id="card-1" class="card" style="background: url('https://i.ibb.co/8nQksSm9/photo-2026-03-22-18-54-49.jpg') center/cover;"></div>
+        <div id="card-2" class="card" style="background: url('https://i.ibb.co/nMjdzv6Y/photo-2026-03-22-18-54-53.jpg') center/cover;"></div>
+        <div id="card-3" class="card" style="background: url('https://i.ibb.co/wZpN9YFq/photo-2026-03-22-18-54-55.jpg') center/cover;"></div>
+    </div>
+
+    <div class="quiz-container" id="quiz">
+        <div class="question" id="question-text">Завантаження, трішки терпіння...</div>
+        <div class="options" id="options-container"></div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = [
+            {
+                question: "Яка найулюбленіша страва Буби?",
+                options: ["Корм за всі гроші зарплати", "Трава зелена", "Паштєт :D"]
+            },
+            {
+                question: "Дофамін може піднятися дуже легко через?",
+                options: ["Шоколад", "Пиво", "Торт"]
+
+            },
+            {
+                question: "Риса характеру?",
+                options: ["Чесність", "Стабільність в емоціях", "Впевненність в собі"]
+            },
+            {
+                question: "Сон чи торт з чаєм?",
+                options: ["Сон <3", "Звичайно чай з тортом", "Все залежить від магнітної бурі"]
+            },
+            {
+                question: "Question x2, card4, <br>Енергія від",
+                options: ["Кави", "Їжі", "Виспатись"]
+            }
+        ];
+
+        let currentStep = 0;
+        const totalSteps = quizData.length;
+
+        // Инициализация первого вопроса и первой карточки
+        window.onload = () => {
+            updateQuiz();
+            document.getElementById('card-0').classList.add('active'); 
+        };
+
+        function handleAnswer() {
+            const quizContainer = document.getElementById('quiz');
+            quizContainer.classList.add('changing');
+
+            setTimeout(() => {
+                quizContainer.classList.remove('changing');
+                currentStep++;
+
+                if (currentStep < totalSteps) {
+                    updateQuiz();
+                    // ОТКРЫВАЕМ СЛЕДУЮЩУЮ КАРТОЧКУ
+                    const nextCard = document.getElementById(`card-${currentStep}`);
+                    if (nextCard) {
+                        // Убираем активность с предыдущих (опционально) и даем новой
+                        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+                        nextCard.classList.add('active');
+                    }
+                } else {
+                    showResult();
+                }
+            }, 300);
+        }
+
+        function updateQuiz() {
+            const qText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const progress = document.getElementById('progress');
+
+            qText.innerText = quizData[currentStep].question;
+            optionsContainer.innerHTML = '';
+            
+            quizData[currentStep].options.forEach(option => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = option;
+                btn.onclick = handleAnswer;
+                optionsContainer.appendChild(btn);
+            });
+
+            progress.style.width = ((currentStep + 1) / totalSteps * 100) + '%';
+        }
+
+        function showResult() {
+            const quizContainer = document.getElementById('quiz');
+            // При завершении подсвечиваем все карточки
+            document.querySelectorAll('.card').forEach(c => {
+                c.classList.add('active');
+                c.style.animation = 'none'; // Остановим пульсацию для финала
+                c.style.boxShadow = '0 0 15px var(--accent-glow)';
+            });
+
+            quizContainer.innerHTML = `
+                <h2 style="color: var(--accent-color);">Вітаю, ти щойно ВІДКРИЛА ВСІ КАРТОЧКИ з Бубеняткою <3</h2>
+                <p>Ти щойно пройшла весь квест та розблокувала всі карточки. Продовжуємо?</p>
+                <button class="option-btn" style="background: var(--accent-color); width: 100%; font-weight: bold;" onclick="location.reload()">Спробувати ще раз!</button>
+                <br><button class="option-btn" style="background: var(--accent-color); width: 100%; font-weight: bold;" onclick="location.reload()">Хочу продовжити (button no active)</button>
+                <p>з.і. якщо бажаєте відповісти на продовжити, то кнопка неактивна, інфо можна передати розробнику сайту: instagram: thelsnch</p>
+            `;
+        }
+    </script>
+            <p style="color: var(--text-secondary); margin: 5px 0 0; font-size: 0.8rem;">(c) developing by thelsnch 2026</p>
+            <br><br>
+</body>
+</html>
